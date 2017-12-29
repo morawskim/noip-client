@@ -80,7 +80,7 @@ class NoIpCommand extends Command
         }
 
 //        try {
-            $output->writeln('Updating IP address from "%s" to "%s"', $currentIp, $ip);
+            $output->writeln(sprintf('Updating IP address from "%s" to "%s"', $currentIp, $ip));
             $api->update($ip);
 //        } catch (\Exception $e) {
 //            if ($output instanceof ConsoleOutputInterface) {
