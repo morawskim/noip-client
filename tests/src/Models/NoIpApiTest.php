@@ -23,7 +23,7 @@ class NoIpApiTest extends \PHPUnit_Framework_TestCase
 
         $model = new \noip\Models\NoIpAccount($username, $password, $hostName);
 
-        $api = $this->getMock('\app\Models\NoIpApi', array(), array($model));
+        $api = $this->getMock('\noip\Models\NoIpApi', array(), array($model));
         $api->expects($this->once())->method('getMyIp')->will($this->returnValue($fakeIp));
 
         $return = $api->getMyIp();
@@ -40,7 +40,7 @@ class NoIpApiTest extends \PHPUnit_Framework_TestCase
         $hostName = 'fakedomain.example';
 
         $model = new \noip\Models\NoIpAccount($username, $password, $hostName);
-        $api = $this->getMock('\app\Models\NoIpApi', array(), array($model));
+        $api = $this->getMock('\noip\Models\NoIpApi', array(), array($model));
         $api->expects($this->once())->method('getMyIp')->will($this->throwException(new RuntimeException()));
 
         $api->getMyIp();
@@ -181,4 +181,3 @@ class NoIpApiTest extends \PHPUnit_Framework_TestCase
         $api->update($newIp);
     }
 }
- 
