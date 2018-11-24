@@ -23,7 +23,9 @@ class NoIpApiTest extends \PHPUnit_Framework_TestCase
 
         $model = new \noip\Models\NoIpAccount($username, $password, $hostName);
 
-        $api = $this->getMock('\noip\Models\NoIpApi', array(), array($model));
+        $api = $this->getMockBuilder(\noip\Models\NoIpApi::class)
+                ->setConstructorArgs([$model])
+                ->getMock();
         $api->expects($this->once())->method('getMyIp')->will($this->returnValue($fakeIp));
 
         $return = $api->getMyIp();
@@ -40,7 +42,9 @@ class NoIpApiTest extends \PHPUnit_Framework_TestCase
         $hostName = 'fakedomain.example';
 
         $model = new \noip\Models\NoIpAccount($username, $password, $hostName);
-        $api = $this->getMock('\noip\Models\NoIpApi', array(), array($model));
+        $api = $this->getMockBuilder(\noip\Models\NoIpApi::class)
+            ->setConstructorArgs([$model])
+            ->getMock();
         $api->expects($this->once())->method('getMyIp')->will($this->throwException(new RuntimeException()));
 
         $api->getMyIp();
@@ -62,7 +66,7 @@ class NoIpApiTest extends \PHPUnit_Framework_TestCase
 
         $model = new \noip\Models\NoIpAccount($username, $password, $hostName);
         $api = new \noip\Models\NoIpApi($model, $client);
-        $this->setExpectedException('\noip\Exception\NoIpApiException', '', \noip\Exception\NoIpApiException::NOHOST);
+        $this->setExpectedException('\noip\Exception\NoIpApiException', null, \noip\Exception\NoIpApiException::NOHOST);
 
         $api->update($newIp);
     }
@@ -81,7 +85,7 @@ class NoIpApiTest extends \PHPUnit_Framework_TestCase
 
         $model = new \noip\Models\NoIpAccount($username, $password, $hostName);
         $api = new \noip\Models\NoIpApi($model, $client);
-        $this->setExpectedException('\noip\Exception\NoIpApiException', '', \noip\Exception\NoIpApiException::FATAL);
+        $this->setExpectedException('\noip\Exception\NoIpApiException', null, \noip\Exception\NoIpApiException::FATAL);
 
         $api->update($newIp);
     }
@@ -100,7 +104,7 @@ class NoIpApiTest extends \PHPUnit_Framework_TestCase
 
         $model = new \noip\Models\NoIpAccount($username, $password, $hostName);
         $api = new \noip\Models\NoIpApi($model, $client);
-        $this->setExpectedException('\noip\Exception\NoIpApiException', '', \noip\Exception\NoIpApiException::ABUSE);
+        $this->setExpectedException('\noip\Exception\NoIpApiException', null, \noip\Exception\NoIpApiException::ABUSE);
 
         $api->update($newIp);
     }
@@ -119,7 +123,7 @@ class NoIpApiTest extends \PHPUnit_Framework_TestCase
 
         $model = new \noip\Models\NoIpAccount($username, $password, $hostName);
         $api = new \noip\Models\NoIpApi($model, $client);
-        $this->setExpectedException('\noip\Exception\NoIpApiException', '', \noip\Exception\NoIpApiException::BADAGENT);
+        $this->setExpectedException('\noip\Exception\NoIpApiException', null, \noip\Exception\NoIpApiException::BADAGENT);
 
         $api->update($newIp);
     }
@@ -138,7 +142,7 @@ class NoIpApiTest extends \PHPUnit_Framework_TestCase
 
         $model = new \noip\Models\NoIpAccount($username, $password, $hostName);
         $api = new \noip\Models\NoIpApi($model, $client);
-        $this->setExpectedException('\noip\Exception\NoIpApiException', '', \noip\Exception\NoIpApiException::BADAUTH);
+        $this->setExpectedException('\noip\Exception\NoIpApiException', null, \noip\Exception\NoIpApiException::BADAUTH);
 
         $api->update($newIp);
     }
@@ -157,7 +161,7 @@ class NoIpApiTest extends \PHPUnit_Framework_TestCase
 
         $model = new \noip\Models\NoIpAccount($username, $password, $hostName);
         $api = new \noip\Models\NoIpApi($model, $client);
-        $this->setExpectedException('\noip\Exception\NoIpApiException', '', \noip\Exception\NoIpApiException::DONATOR);
+        $this->setExpectedException('\noip\Exception\NoIpApiException', null, \noip\Exception\NoIpApiException::DONATOR);
 
         $api->update($newIp);
     }
@@ -176,7 +180,7 @@ class NoIpApiTest extends \PHPUnit_Framework_TestCase
 
         $model = new \noip\Models\NoIpAccount($username, $password, $hostName);
         $api = new \noip\Models\NoIpApi($model, $client);
-        $this->setExpectedException('\noip\Exception\NoIpApiException', '', \noip\Exception\NoIpApiException::UNKNOWN);
+        $this->setExpectedException('\noip\Exception\NoIpApiException', null, \noip\Exception\NoIpApiException::UNKNOWN);
 
         $api->update($newIp);
     }
