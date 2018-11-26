@@ -6,7 +6,6 @@ use noip\Models\NoIpAccount;
 use noip\Models\NoIpApi;
 use noip\Models\NoIpConfiguration;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Formatter\OutputFormatter;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -50,13 +49,12 @@ class NoIpCommand extends Command
         /** @var bool $forceUpdate */
         $forceUpdate = !!$input->getArgument('force');
 
-        $configFile = $input->getOption('file');
-        $configuration = NoIpConfiguration::parseIniFile($configFile);
-
         $model = $this->getModel();
         $api = $this->getApiModel();
 
         if (empty($model)) {
+            $configFile = $input->getOption('file');
+            $configuration = NoIpConfiguration::parseIniFile($configFile);
             $model = new NoIpAccount(
                 $configuration->getUsername(),
                 $configuration->getPassword(),
@@ -79,18 +77,17 @@ class NoIpCommand extends Command
             return true;
         }
 
-//        try {
+        try {
             $output->writeln(sprintf('Updating IP address from "%s" to "%s"', $currentIp, $ip));
             $api->update($ip);
-//        } catch (\Exception $e) {
-//            if ($output instanceof ConsoleOutputInterface) {
-//                $output->getErrorOutput()->writeln($e->getMessage());
-//            } else {
-//                $output->writeln($e->getMessage());
-//            }
-//
-//            return false;
-//        }
+        } catch (\Exception $e) {
+            if ($output instanceof ConsoleOutputInterface) {
+                $output->getErrorOutput()->writeln($e->getMessage());
+            } else {
+                $output->writeln($e->getMessage());
+            }
+            return 1;
+        }
 
         $output->writeln('SUCCESS');
         return true;
