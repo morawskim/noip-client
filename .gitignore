@@ -1,7 +1,6 @@
 # Created by .gitignore support plugin (hsz.mobi)
 composer.phar
 phing-latest.phar
-composer.lock
 vendor/
 coverage-report/
 .idea/
