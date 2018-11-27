@@ -13,11 +13,11 @@
     ],
 
     "require": {
-        "symfony/console": "v2.5.6",
-        "symfony/config": "2.5.6",
+        "symfony/console": "~v3.4",
+        "symfony/config": "~v3.4",
         "guzzle/guzzle": "v3.9.2",
         "monolog/monolog": "1.11.0",
-        "symfony/validator": "v2.5.6"
+        "symfony/validator": "~v3.4"
     },
 
     "require-dev": {
