@@ -9,3 +9,5 @@ RUN apt-get update && \
         --no-install-recommends && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+RUN echo "phar.readonly=0" > /usr/local/etc/php/conf.d/99-custom.ini
