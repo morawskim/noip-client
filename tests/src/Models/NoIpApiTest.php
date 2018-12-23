@@ -184,4 +184,42 @@ class NoIpApiTest extends \PHPUnit_Framework_TestCase
 
         $api->update($newIp);
     }
+
+    public function testMockGetIp()
+    {
+        $username = 'testUsername';
+        $password = 'testPassword';
+        $hostName = 'fakedomain.example';
+        $expectedId = '8.8.8.8';
+
+        $client = new \Guzzle\Http\Client();
+        $client->addSubscriber(new Guzzle\Plugin\Mock\MockPlugin(array(
+            new \Guzzle\Http\Message\Response(200, null, $expectedId)
+        )));
+
+        $model = new \noip\Models\NoIpAccount($username, $password, $hostName);
+        $api = new \noip\Models\NoIpApi($model, $client);
+
+        $ip = $api->getMyIp();
+        $this->assertEquals($expectedId, $ip);
+    }
+
+    public function testMockGetIpException()
+    {
+        $username = 'testUsername';
+        $password = 'testPassword';
+        $hostName = 'fakedomain.example';
+
+        $client = new \Guzzle\Http\Client();
+        $client->addSubscriber(new Guzzle\Plugin\Mock\MockPlugin(array(
+            new \Guzzle\Http\Message\Response(400, null, 'Error')
+        )));
+
+        $model = new \noip\Models\NoIpAccount($username, $password, $hostName);
+        $api = new \noip\Models\NoIpApi($model, $client);
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessageRegExp('/Cant get IP address/');
+        $api->getMyIp();
+    }
 }
