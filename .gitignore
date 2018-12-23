@@ -4,4 +4,4 @@ phing-latest.phar
 vendor/
 coverage-report/
 .idea/
-config.ini
+.env

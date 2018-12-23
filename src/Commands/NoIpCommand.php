@@ -40,7 +40,7 @@ class NoIpCommand extends Command
                 'f',
                 InputOption::VALUE_OPTIONAL,
                 'The path to configuration file',
-                '/etc/noipclient.ini'
+                '.env'
             );
     }
 
@@ -54,7 +54,7 @@ class NoIpCommand extends Command
 
         if (empty($model)) {
             $configFile = $input->getOption('file');
-            $configuration = NoIpConfiguration::parseIniFile($configFile);
+            $configuration = NoIpConfiguration::parseDotEnvFile($configFile);
             $model = new NoIpAccount(
                 $configuration->getUsername(),
                 $configuration->getPassword(),

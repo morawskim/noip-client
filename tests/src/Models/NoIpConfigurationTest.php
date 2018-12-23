@@ -25,11 +25,9 @@ class NoIpConfigurationTest extends \PHPUnit_Framework_TestCase
         $username = 'username';
 
         $config = [
-            'noip' => [
-                'username' => $username,
-                'password' => $password,
-                'hostname' => $hostname,
-            ]
+            'NOIP_USERNAME' => $username,
+            'NOIP_PASSWORD' => $password,
+            'NOIP_HOSTNAME' => $hostname,
         ];
         $config = \noip\Models\NoIpConfiguration::parseArray($config);
         $this->assertEquals($hostname, $config->getHostname());

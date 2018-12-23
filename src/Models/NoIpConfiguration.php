@@ -3,6 +3,9 @@
 namespace noip\Models;
 
 
+use Symfony\Component\Dotenv\Dotenv;
+use Symfony\Component\Dotenv\Exception\FormatException;
+
 class NoIpConfiguration
 {
     /**
@@ -62,7 +65,12 @@ class NoIpConfiguration
         return $this->password;
     }
 
-    public static function parseIniFile($filePath)
+    /**
+     * @param string $filePath Path to .env file
+     * @throws FormatException
+     * @return NoIpConfiguration
+     */
+    public static function parseDotEnvFile($filePath)
     {
         if (!file_exists($filePath)) {
             throw new \InvalidArgumentException(sprintf('File "%s" not exist', $filePath));
@@ -76,10 +84,8 @@ class NoIpConfiguration
             throw new \InvalidArgumentException(sprintf('File "%s" is not regular file', $filePath));
         }
 
-        $array = parse_ini_file($filePath, true);
-        if (false === $array) {
-            throw new \RuntimeException(sprintf('Cant parse INI "%s" file'));
-        }
+        $dotEnv = new Dotenv();
+        $array = $dotEnv->parse(file_get_contents($filePath), $filePath);
 
         return self::parseArray($array);
     }
@@ -88,22 +94,16 @@ class NoIpConfiguration
     {
         $obj = new static;
 
-        if (isset($config['noip']) && is_array($config['noip'])) {
-            $array = $config['noip'];
-        } else {
-            $array = array();
+        if (!empty($config['NOIP_USERNAME'])) {
+            $obj->setUsername($config['NOIP_USERNAME']);
         }
 
-        if (!empty($array['username'])) {
-            $obj->setUsername($array['username']);
+        if (!empty($config['NOIP_PASSWORD'])) {
+            $obj->setPassword($config['NOIP_PASSWORD']);
         }
 
-        if (!empty($array['password'])) {
-            $obj->setPassword($array['password']);
-        }
-
-        if (!empty($array['hostname'])) {
-            $obj->setHostname($array['hostname']);
+        if (!empty($config['NOIP_HOSTNAME'])) {
+            $obj->setHostname($config['NOIP_HOSTNAME']);
         }
 
         return $obj;

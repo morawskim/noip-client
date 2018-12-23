@@ -7,14 +7,13 @@ Copy noip.phar to /usr/local/sbin
     
 Create noip client configuration
 
-    vi /etc/noipclient.ini
+    vi .env
     
 Example config file
 
-    [noip]
-    username=yourusername@domain.com
-    password=secretpassword
-    hostname=hostname-to-upload
+    NOIP_USERNAME=yourusername@domain.com
+    NOIP_PASSWORD=secretpassword
+    NOIP_HOSTNAME=hostname-to-upload
     
 
 Add executable permissions (only for owner)
@@ -23,7 +22,7 @@ Add executable permissions (only for owner)
     
 Run
 
-    /usr/local/sbin/noip.phar noip:update -f /etc/noipclient.ini
+    /usr/local/sbin/noip.phar noip:update -f /path/to/.env/file
 
 Create crontab file
 
