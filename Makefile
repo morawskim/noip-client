@@ -1,2 +1,2 @@
 test:
-	docker-compose run php /app/vendor/bin/phpunit
+	docker-compose run --rm php /app/vendor/bin/phpunit
