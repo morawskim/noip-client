@@ -1,6 +1,6 @@
 <?php
 
-class NoIpAccountTest extends PHPUnit_Framework_TestCase
+class NoIpAccountTest extends \PHPUnit\Framework\TestCase
 {
     public function testConstructorSet()
     {
@@ -39,4 +39,3 @@ class NoIpAccountTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($username, $model->getUsername());
     }
 }
- 

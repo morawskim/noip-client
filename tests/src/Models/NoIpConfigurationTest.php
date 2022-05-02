@@ -1,6 +1,6 @@
 <?php
 
-class NoIpConfigurationTest extends \PHPUnit_Framework_TestCase
+class NoIpConfigurationTest extends \PHPUnit\Framework\TestCase
 {
     public function testGettersAndSetters()
     {

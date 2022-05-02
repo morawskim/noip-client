@@ -1,6 +1,6 @@
 <?php
 
-class NoIpCommandTest extends PHPUnit_Framework_TestCase
+class NoIpCommandTest extends \PHPUnit\Framework\TestCase
 {
     public function testTheSameIpWithoutForceArgument()
     {
@@ -22,7 +22,7 @@ class NoIpCommandTest extends PHPUnit_Framework_TestCase
         $tester->execute(['--file' => '/dev/null'], []);
         $this->assertSame(0, $tester->getStatusCode());
         rewind($tester->getOutput()->getStream());
-        $this->assertContains('The same IP', stream_get_contents($tester->getOutput()->getStream()));
+        $this->assertStringContainsString('The same IP', stream_get_contents($tester->getOutput()->getStream()));
     }
 
     public function testTheSameIpWithForceArgument()
@@ -47,8 +47,8 @@ class NoIpCommandTest extends PHPUnit_Framework_TestCase
         $this->assertSame(0, $tester->getStatusCode());
         rewind($tester->getOutput()->getStream());
         $contents = stream_get_contents($tester->getOutput()->getStream());
-        $this->assertContains('Updating IP address from', $contents);
-        $this->assertContains('SUCCESS', $contents);
+        $this->assertStringContainsString('Updating IP address from', $contents);
+        $this->assertStringContainsString('SUCCESS', $contents);
     }
 
     public function testDifferentIp()
@@ -73,8 +73,8 @@ class NoIpCommandTest extends PHPUnit_Framework_TestCase
         $this->assertSame(0, $tester->getStatusCode());
         rewind($tester->getOutput()->getStream());
         $contents = stream_get_contents($tester->getOutput()->getStream());
-        $this->assertContains('Updating IP address from', $contents);
-        $this->assertContains('SUCCESS', $contents);
+        $this->assertStringContainsString('Updating IP address from', $contents);
+        $this->assertStringContainsString('SUCCESS', $contents);
     }
 
     public function testDifferentIpError()
@@ -100,6 +100,6 @@ class NoIpCommandTest extends PHPUnit_Framework_TestCase
         $tester->execute(['--file' => '/dev/null'], []);
         $this->assertSame(1, $tester->getStatusCode());
         rewind($tester->getOutput()->getStream());
-        $this->assertNotContains('SUCCESS', stream_get_contents($tester->getOutput()->getStream()));
+        $this->assertStringNotContainsString('SUCCESS', stream_get_contents($tester->getOutput()->getStream()));
     }
 }

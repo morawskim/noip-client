@@ -3,7 +3,7 @@
     "description": "Update",
     "minimum-stability": "dev",
     "prefer-stable": true,
-    "version": "0.1.0-dev",
+    "version": "0.2.0-dev",
     "license": "MIT",
     "authors": [
         {
@@ -13,21 +13,21 @@
     ],
 
     "require": {
-        "symfony/console": "~v3.4",
-        "symfony/config": "~v3.4",
-        "guzzle/guzzle": "v3.9.2",
+        "guzzlehttp/guzzle": "^7.4",
         "monolog/monolog": "1.11.0",
-        "symfony/validator": "~v3.4",
-        "symfony/dotenv": "~3.4"
-    },
-
-    "require-dev": {
-        "phpunit/phpunit": "~5.7"
+        "symfony/config": "^6.0",
+        "symfony/console": "^6.0",
+        "symfony/dotenv": "^6.0",
+        "symfony/validator": "^6.0"
     },
 
     "autoload": {
         "psr-4": {
             "noip\\": "src/"
         }
+    },
+    "require-dev": {
+        "phing/phing": "^2.17",
+        "phpunit/phpunit": "^9.5"
     }
 }

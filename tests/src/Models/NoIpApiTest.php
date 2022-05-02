@@ -1,19 +1,9 @@
 <?php
 
-class NoIpApiTest extends \PHPUnit_Framework_TestCase
+use noip\Exception\NoIpApiException;
+
+class NoIpApiTest extends \PHPUnit\Framework\TestCase
 {
-    public function testAssignedIpFakeDomain()
-    {
-        $username = 'testUsername';
-        $password = 'testPassword';
-        $hostName = 'fakedomain.example';
-
-        $model = new \noip\Models\NoIpAccount($username, $password, $hostName);
-        $api = new \noip\Models\NoIpApi($model);
-
-//        $api->getCurrentAssignedIp();
-    }
-
     public function testMyIp()
     {
         $username = 'testUsername';
@@ -32,9 +22,6 @@ class NoIpApiTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($fakeIp, $return);
     }
 
-    /**
-     * @expectedException RuntimeException
-     */
     public function testCurrentIpNotFund()
     {
         $username = 'testUsername';
@@ -47,6 +34,7 @@ class NoIpApiTest extends \PHPUnit_Framework_TestCase
             ->getMock();
         $api->expects($this->once())->method('getMyIp')->will($this->throwException(new RuntimeException()));
 
+        $this->expectException(RuntimeException::class);
         $api->getMyIp();
     }
 
@@ -59,14 +47,16 @@ class NoIpApiTest extends \PHPUnit_Framework_TestCase
         $hostName = 'fakedomain.example';
         $newIp = '8.8.8.8';
 
-        $client = new \Guzzle\Http\Client();
-        $client->addSubscriber(new Guzzle\Plugin\Mock\MockPlugin(array(
-            new \Guzzle\Http\Message\Response(200, null, 'nohost')
-        )));
+        $mock = new \GuzzleHttp\Handler\MockHandler([
+            new \GuzzleHttp\Psr7\Response(200, [], 'nohost'),
+        ]);
+        $handlerStack = \GuzzleHttp\HandlerStack::create($mock);
+        $client = new \GuzzleHttp\Client(['handler' => $handlerStack]);
 
         $model = new \noip\Models\NoIpAccount($username, $password, $hostName);
         $api = new \noip\Models\NoIpApi($model, $client);
-        $this->setExpectedException('\noip\Exception\NoIpApiException', null, \noip\Exception\NoIpApiException::NOHOST);
+        $this->expectException(NoIpApiException::class);
+        $this->expectExceptionCode(\noip\Exception\NoIpApiException::NOHOST);
 
         $api->update($newIp);
     }
@@ -78,14 +68,16 @@ class NoIpApiTest extends \PHPUnit_Framework_TestCase
         $hostName = 'fakedomain.example';
         $newIp = '8.8.8.8';
 
-        $client = new \Guzzle\Http\Client();
-        $client->addSubscriber(new Guzzle\Plugin\Mock\MockPlugin(array(
-            new \Guzzle\Http\Message\Response(200, null, '911')
-        )));
+        $mock = new \GuzzleHttp\Handler\MockHandler([
+            new \GuzzleHttp\Psr7\Response(200, [], '911'),
+        ]);
+        $handlerStack = \GuzzleHttp\HandlerStack::create($mock);
+        $client = new \GuzzleHttp\Client(['handler' => $handlerStack]);
 
         $model = new \noip\Models\NoIpAccount($username, $password, $hostName);
         $api = new \noip\Models\NoIpApi($model, $client);
-        $this->setExpectedException('\noip\Exception\NoIpApiException', null, \noip\Exception\NoIpApiException::FATAL);
+        $this->expectException(NoIpApiException::class);
+        $this->expectExceptionCode(\noip\Exception\NoIpApiException::FATAL);
 
         $api->update($newIp);
     }
@@ -97,14 +89,16 @@ class NoIpApiTest extends \PHPUnit_Framework_TestCase
         $hostName = 'fakedomain.example';
         $newIp = '8.8.8.8';
 
-        $client = new \Guzzle\Http\Client();
-        $client->addSubscriber(new Guzzle\Plugin\Mock\MockPlugin(array(
-            new \Guzzle\Http\Message\Response(200, null, 'abuse')
-        )));
+        $mock = new \GuzzleHttp\Handler\MockHandler([
+            new \GuzzleHttp\Psr7\Response(200, [], 'abuse'),
+        ]);
+        $handlerStack = \GuzzleHttp\HandlerStack::create($mock);
+        $client = new \GuzzleHttp\Client(['handler' => $handlerStack]);
 
         $model = new \noip\Models\NoIpAccount($username, $password, $hostName);
         $api = new \noip\Models\NoIpApi($model, $client);
-        $this->setExpectedException('\noip\Exception\NoIpApiException', null, \noip\Exception\NoIpApiException::ABUSE);
+        $this->expectException(NoIpApiException::class);
+        $this->expectExceptionCode(\noip\Exception\NoIpApiException::ABUSE);
 
         $api->update($newIp);
     }
@@ -116,14 +110,16 @@ class NoIpApiTest extends \PHPUnit_Framework_TestCase
         $hostName = 'fakedomain.example';
         $newIp = '8.8.8.8';
 
-        $client = new \Guzzle\Http\Client();
-        $client->addSubscriber(new Guzzle\Plugin\Mock\MockPlugin(array(
-            new \Guzzle\Http\Message\Response(200, null, 'badagent'),
-        )));
+        $mock = new \GuzzleHttp\Handler\MockHandler([
+            new \GuzzleHttp\Psr7\Response(200, [], 'badagent'),
+        ]);
+        $handlerStack = \GuzzleHttp\HandlerStack::create($mock);
+        $client = new \GuzzleHttp\Client(['handler' => $handlerStack]);
 
         $model = new \noip\Models\NoIpAccount($username, $password, $hostName);
         $api = new \noip\Models\NoIpApi($model, $client);
-        $this->setExpectedException('\noip\Exception\NoIpApiException', null, \noip\Exception\NoIpApiException::BADAGENT);
+        $this->expectException(NoIpApiException::class);
+        $this->expectExceptionCode(\noip\Exception\NoIpApiException::BADAGENT);
 
         $api->update($newIp);
     }
@@ -135,14 +131,16 @@ class NoIpApiTest extends \PHPUnit_Framework_TestCase
         $hostName = 'fakedomain.example';
         $newIp = '8.8.8.8';
 
-        $client = new \Guzzle\Http\Client();
-        $client->addSubscriber(new Guzzle\Plugin\Mock\MockPlugin(array(
-            new \Guzzle\Http\Message\Response(200, null, 'badauth')
-        )));
+        $mock = new \GuzzleHttp\Handler\MockHandler([
+            new \GuzzleHttp\Psr7\Response(200, [], 'badauth'),
+        ]);
+        $handlerStack = \GuzzleHttp\HandlerStack::create($mock);
+        $client = new \GuzzleHttp\Client(['handler' => $handlerStack]);
 
         $model = new \noip\Models\NoIpAccount($username, $password, $hostName);
         $api = new \noip\Models\NoIpApi($model, $client);
-        $this->setExpectedException('\noip\Exception\NoIpApiException', null, \noip\Exception\NoIpApiException::BADAUTH);
+        $this->expectException(NoIpApiException::class);
+        $this->expectExceptionCode(\noip\Exception\NoIpApiException::BADAUTH);
 
         $api->update($newIp);
     }
@@ -154,14 +152,16 @@ class NoIpApiTest extends \PHPUnit_Framework_TestCase
         $hostName = 'fakedomain.example';
         $newIp = '8.8.8.8';
 
-        $client = new \Guzzle\Http\Client();
-        $client->addSubscriber(new Guzzle\Plugin\Mock\MockPlugin(array(
-            new \Guzzle\Http\Message\Response(200, null, '!donator')
-        )));
+        $mock = new \GuzzleHttp\Handler\MockHandler([
+            new \GuzzleHttp\Psr7\Response(200, [], '!donator'),
+        ]);
+        $handlerStack = \GuzzleHttp\HandlerStack::create($mock);
+        $client = new \GuzzleHttp\Client(['handler' => $handlerStack]);
 
         $model = new \noip\Models\NoIpAccount($username, $password, $hostName);
         $api = new \noip\Models\NoIpApi($model, $client);
-        $this->setExpectedException('\noip\Exception\NoIpApiException', null, \noip\Exception\NoIpApiException::DONATOR);
+        $this->expectException(NoIpApiException::class);
+        $this->expectExceptionCode(\noip\Exception\NoIpApiException::DONATOR);
 
         $api->update($newIp);
     }
@@ -173,14 +173,16 @@ class NoIpApiTest extends \PHPUnit_Framework_TestCase
         $hostName = 'fakedomain.example';
         $newIp = '8.8.8.8';
 
-        $client = new \Guzzle\Http\Client();
-        $client->addSubscriber(new Guzzle\Plugin\Mock\MockPlugin(array(
-            new \Guzzle\Http\Message\Response(200, null, 'unknown')
-        )));
+        $mock = new \GuzzleHttp\Handler\MockHandler([
+            new \GuzzleHttp\Psr7\Response(200, [], 'unknown'),
+        ]);
+        $handlerStack = \GuzzleHttp\HandlerStack::create($mock);
+        $client = new \GuzzleHttp\Client(['handler' => $handlerStack]);
 
         $model = new \noip\Models\NoIpAccount($username, $password, $hostName);
         $api = new \noip\Models\NoIpApi($model, $client);
-        $this->setExpectedException('\noip\Exception\NoIpApiException', null, \noip\Exception\NoIpApiException::UNKNOWN);
+        $this->expectException(NoIpApiException::class);
+        $this->expectExceptionCode(\noip\Exception\NoIpApiException::UNKNOWN);
 
         $api->update($newIp);
     }
@@ -192,10 +194,11 @@ class NoIpApiTest extends \PHPUnit_Framework_TestCase
         $hostName = 'fakedomain.example';
         $expectedId = '8.8.8.8';
 
-        $client = new \Guzzle\Http\Client();
-        $client->addSubscriber(new Guzzle\Plugin\Mock\MockPlugin(array(
-            new \Guzzle\Http\Message\Response(200, null, $expectedId)
-        )));
+        $mock = new \GuzzleHttp\Handler\MockHandler([
+            new \GuzzleHttp\Psr7\Response(200, [], $expectedId),
+        ]);
+        $handlerStack = \GuzzleHttp\HandlerStack::create($mock);
+        $client = new \GuzzleHttp\Client(['handler' => $handlerStack]);
 
         $model = new \noip\Models\NoIpAccount($username, $password, $hostName);
         $api = new \noip\Models\NoIpApi($model, $client);
@@ -210,16 +213,17 @@ class NoIpApiTest extends \PHPUnit_Framework_TestCase
         $password = 'testPassword';
         $hostName = 'fakedomain.example';
 
-        $client = new \Guzzle\Http\Client();
-        $client->addSubscriber(new Guzzle\Plugin\Mock\MockPlugin(array(
-            new \Guzzle\Http\Message\Response(400, null, 'Error')
-        )));
+        $mock = new \GuzzleHttp\Handler\MockHandler([
+            new \GuzzleHttp\Psr7\Response(400, [], 'Error')
+        ]);
+        $handlerStack = \GuzzleHttp\HandlerStack::create($mock);
+        $client = new \GuzzleHttp\Client(['handler' => $handlerStack]);
 
         $model = new \noip\Models\NoIpAccount($username, $password, $hostName);
         $api = new \noip\Models\NoIpApi($model, $client);
 
         $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessageRegExp('/Cant get IP address/');
+        $this->expectExceptionMessageMatches('/Cant get IP address/');
         $api->getMyIp();
     }
 }

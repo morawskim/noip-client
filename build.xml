@@ -9,7 +9,7 @@
                 <include name="vendor/**" />
             </fileset>
             <metadata>
-                <element name="version" value="0.1.0" />
+                <element name="version" value="0.2.0" />
                 <element name="authors">
                     <element name="Marcin Morawski">
                         <element name="e-mail" value="marcin@morawskim.pl" />

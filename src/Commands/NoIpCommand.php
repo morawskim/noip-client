@@ -24,7 +24,7 @@ class NoIpCommand extends Command
      */
     private $apiModel;
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('noip:update')
@@ -44,7 +44,7 @@ class NoIpCommand extends Command
             );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         /** @var bool $forceUpdate */
         $forceUpdate = !!$input->getArgument('force');
@@ -74,7 +74,7 @@ class NoIpCommand extends Command
 
         if (!$forceUpdate && $ip === $currentIp) {
             $output->writeln(sprintf('The same IP (%s) address. Skip.', $ip));
-            return true;
+            return 0;
         }
 
         try {
@@ -90,7 +90,7 @@ class NoIpCommand extends Command
         }
 
         $output->writeln('SUCCESS');
-        return true;
+        return 0;
     }
 
     /**

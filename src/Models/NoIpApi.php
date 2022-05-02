@@ -1,16 +1,18 @@
 <?php
 
 namespace noip\Models;
+
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\RequestOptions;
 use noip\Exception\NoIpApiException;
-use Guzzle\Http\Client;
-use Guzzle\Http\Exception\RequestException;
 
 class NoIpApi
 {
     const IP_URL = 'http://ip1.dynupdate.no-ip.com';
     const IP_URL2 = 'http://ip2.dynupdate.no-ip.com';
 
-    const USER_AGENT = 'PHP-NoIPUpdater/0.1.0-dev marcin@morawskim.pl';
+    const USER_AGENT = 'PHP-NoIPUpdater/0.2.0-dev marcin@morawskim.pl';
     const API_URL = 'http://dynupdate.no-ip.com';
     const API_PATH = '/nic/update';
 
@@ -46,12 +48,9 @@ class NoIpApi
         $client = $this->getHttpClient();
         $host = $this->randomIpServer();
 
-        $client->setBaseUrl($host);
-        $requestInterface = $client->get('/');
         try {
-            $response = $requestInterface->send();
-            $ip = $response->getBody(true);
-            return $ip;
+            $response = $client->get('/', ['base_uri' => $host]);
+            return $response->getBody()->getContents();
         } catch (RequestException $e) {
             throw new \RuntimeException(sprintf('Cant get IP address. Reason: %s', $e->getMessage()), $e->getCode(), $e);
         }
@@ -80,20 +79,17 @@ class NoIpApi
         $model = $this->getModel();
 
         $client = $this->getHttpClient();
-        $client->setBaseUrl(self::API_URL);
-        $client->setUserAgent(self::USER_AGENT);
-        $requestInterface = $client->get(self::API_PATH, null, array(
-            'query' => array('hostname' => $model->getHostName(), 'myip' => $newIp),
-        ));
-        $requestInterface->setAuth($model->getUsername(), $model->getPassword(), 'Basic');
 
         try {
-            $response = $requestInterface->send();
-            $body = $response->getBody();
-            $status = strval($body);
+            $response = $client->get(self::API_PATH, [
+                'base_uri' => self::API_URL,
+                RequestOptions::AUTH => [$model->getUsername(), $model->getPassword()],
+                RequestOptions::QUERY => ['hostname' => $model->getHostName(), 'myip' => $newIp],
+            ]);
+            $status = $response->getBody()->getContents();
             return $this->validateResponse($status);
         } catch (RequestException $e) {
-            $status = $e->getResponse()->getBody(true);
+            $status = $e->getResponse()->getBody()->getContents();
             return $this->validateResponse($status);
         }
     }
@@ -117,7 +113,9 @@ class NoIpApi
     public function getHttpClient()
     {
         if (null === $this->httpClient) {
-            $this->setHttpClient(new Client());
+            $this->setHttpClient(new Client([
+                'headers' => ['User-Agent' => self::USER_AGENT]
+            ]));
         }
 
         return $this->httpClient;
@@ -174,6 +172,4 @@ class NoIpApi
 
         throw new NoIpApiException($error, $errorNum);
     }
-
-
 }
