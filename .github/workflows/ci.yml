@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  push:
+    branches:
+    - '*'
+  pull_request:
+    branches:
+    - '*'
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          extensions: mbstring, intl
+          coverage: xdebug
+      - uses: php-actions/composer@v5
+      - name: Run PHP version
+        run: php -v
+      - name: Run phpunit
+        run: vendor/bin/phpunit
