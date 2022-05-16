@@ -24,3 +24,26 @@ jobs:
         run: php -v
       - name: Run phpunit
         run: vendor/bin/phpunit
+  phar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          extensions: mbstring, intl
+          coverage: none
+      - uses: php-actions/composer@v5
+      - name: Run PHP version
+        run: php -v
+      - name: Build noip phar
+        run: |
+          php -dphar.readonly=0 ./vendor/bin/phing
+          chmod a+x ./build/noip.phar
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: noip.phar
+          path: |
+            build/noip.phar
